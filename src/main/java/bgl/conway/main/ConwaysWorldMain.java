@@ -2,6 +2,7 @@ package bgl.conway.main;
 
 import java.util.Scanner;
 
+import bgl.conway.exceptions.InvalidInputException;
 import bgl.conway.model.World;
 import bgl.conway.service.GenerationService;
 import bgl.conway.service.GenerationServiceImpl;
@@ -26,7 +27,7 @@ public class ConwaysWorldMain {
         return coordinates;
 	}
 	
-	public World initializeWorld(String aliveCoordinates) {
+	public World initializeWorld(String aliveCoordinates) throws InvalidInputException {
 		World world = new World(ROW_SIZE,COLUMN_SIZE);
 		return genService.setInitialAliveCells(world, aliveCoordinates);
 	}
@@ -41,9 +42,17 @@ public class ConwaysWorldMain {
 		
 	public static void main(String[] args) {
 		ConwaysWorldMain conwaysWorldMain = new ConwaysWorldMain();
-		String aliveCoordinates = conwaysWorldMain.askForInput();
+		World world = null;
 		
-		World world = conwaysWorldMain.initializeWorld(aliveCoordinates);		
+		do {
+			String aliveCoordinates = conwaysWorldMain.askForInput();
+			
+			try {
+				world = conwaysWorldMain.initializeWorld(aliveCoordinates);
+			} catch (InvalidInputException e) {
+				System.out.println("Invalid Input, please try again");
+			}		
+		} while(world == null);
 
 		System.out.println("Output of the next 100 state:");
 		world = conwaysWorldMain.generateHundredTimes(world);

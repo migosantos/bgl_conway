@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import bgl.conway.exceptions.InvalidInputException;
 import bgl.conway.model.World;
 
 public class GenerationServiceTest {
@@ -24,7 +25,7 @@ public class GenerationServiceTest {
 	}
 
 	@Test
-	public void testSetInitialAliveCells() {
+	public void testSetInitialAliveCells() throws InvalidInputException {
 		World world = new World(ROW_SIZE,COLUMN_SIZE);
 		String aliveCoordinates = "[[5, 5], [6, 5], [7, 5], [5, 6], [6, 6], [7, 6]]";
 		genService.setInitialAliveCells(world, aliveCoordinates);
@@ -38,7 +39,7 @@ public class GenerationServiceTest {
 	}
 
 	@Test
-	public void testCountAliveNeighbors() {
+	public void testCountAliveNeighbors() throws InvalidInputException {
 		World world = new World(ROW_SIZE,COLUMN_SIZE);
 		String aliveCoordinates = "[[5, 5], [6, 5], [7, 5], [8, 6]";
 		genService.setInitialAliveCells(world, aliveCoordinates);
@@ -49,7 +50,7 @@ public class GenerationServiceTest {
 	}
 	
 	@Test
-	public void testUnderPopulation() {
+	public void testUnderPopulation() throws InvalidInputException {
 		World world = new World(ROW_SIZE,COLUMN_SIZE);
 		String aliveCoordinates = "[[5, 5]]";
 		genService.setInitialAliveCells(world, aliveCoordinates);
@@ -61,7 +62,7 @@ public class GenerationServiceTest {
 	}
 	
 	@Test
-	public void testOverPopulation() {
+	public void testOverPopulation() throws InvalidInputException {
 		World world = new World(ROW_SIZE,COLUMN_SIZE);
 		String aliveCoordinates = "[[5, 5], [5, 6], [5, 4], [4, 5], [6, 5]]";
 		genService.setInitialAliveCells(world, aliveCoordinates);
@@ -73,7 +74,7 @@ public class GenerationServiceTest {
 	}
 	
 	@Test
-	public void testLiveUntilNextGeneration() {
+	public void testLiveUntilNextGeneration() throws InvalidInputException {
 		World world = new World(ROW_SIZE,COLUMN_SIZE);
 		String aliveCoordinates = "[[5, 5], [5, 6], [5, 4], [4, 5]]";
 		genService.setInitialAliveCells(world, aliveCoordinates);
@@ -85,7 +86,7 @@ public class GenerationServiceTest {
 	}
 	
 	@Test
-	public void testReproduction() {
+	public void testReproduction() throws InvalidInputException {
 		World world = new World(ROW_SIZE,COLUMN_SIZE);
 		String aliveCoordinates = "[[5, 5], [6, 5], [7, 5]]";
 		genService.setInitialAliveCells(world, aliveCoordinates);
@@ -94,6 +95,18 @@ public class GenerationServiceTest {
 		
 		World newWorld = genService.applyRulesForOneGeneration(world);
 		assertTrue(newWorld.getMatrix()[6][6].isAlive());
+		
+	}
+	
+	@Test
+	public void testInvalidInput()  {
+		World world = new World(ROW_SIZE,COLUMN_SIZE);
+		String aliveCoordinates = "xyasdf123";
+		try {
+			genService.setInitialAliveCells(world, aliveCoordinates);
+		} catch (InvalidInputException e) {
+			assertTrue(e != null);
+		}
 		
 	}
 }
